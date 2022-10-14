@@ -23,15 +23,24 @@ const handleSubmit = event => {
         });
 };
 
+
 const onLoadMore = () => {
     pixabay.increment();
+
+    if (!pixabay.isShowLoadMore) {
+    refs.loadMoreBtn.classList.add('is-hidden');
+  }
+
     pixabay.getPhotos()
         .then(({ results }) => {
             const markup = createMarkup(results);
             refs.galery.insertAdjacentHTML('beforeend', markup);
-        });
+        })
+     .catch(error => {
+      Notify.failure(error.message, 'Щось пішло не так!');
+    });
  };
 
-refs.btnSubmit.addEventListener('submit', handleSubmit);
+refs.form.addEventListener('submit', handleSubmit);
 refs.loadMoreBtn.addEventListener('click', onLoadMore);
 

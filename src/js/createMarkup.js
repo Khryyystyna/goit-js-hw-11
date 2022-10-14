@@ -1,5 +1,5 @@
 export function createMarkup(photos) {
-    return photos.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
+  return photos.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
         return `<div class="photo-card">
 <img src="${webformatURL}" alt="${tags}" loading="lazy" />
   <div class="info">
