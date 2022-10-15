@@ -7,14 +7,13 @@ const pixabay = new PixabayAPI();
 
 const handleSubmit = async event => {
     event.preventDefault();
-
     const { elements: { query }, } = event.currentTarget;
     const searchQuery = query.value.trim().toLowerCase();
     if (!searchQuery) {
         Notify.failure('Sorry, there are no images matching your search query. Please try again');
         return;
     }
-     clearPage();
+    clearPage();
     pixabay.query = searchQuery;
 
 try {
@@ -25,29 +24,21 @@ try {
     }
     const markup = createMarkup(results);
     refs.galery.insertAdjacentHTML('beforeend', markup);
-
     pixabay.calculateTotalHits(total);
-
-    Notify.success(`Ми знайшли ${total} зображень по запиту ${searchQuery}`);
 
     if (pixabay.isShowLoadMore) {
         refs.loadMoreBtn.classList.remove('is-hidden');
     }
-
 } catch (error) {
     clearPage();
 }
-
 };
-
 
 const onLoadMore = () => {
     pixabay.increment();
-
     if (!pixabay.isShowLoadMore) {
     refs.loadMoreBtn.classList.add('is-hidden');
   }
-
     pixabay.getPhotos()
         .then(({ results }) => {
             const markup = createMarkup(results);
