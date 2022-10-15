@@ -17,7 +17,8 @@ export class PixabayAPI {
     let response = await fetch(url);
     let data = await response.json();
     console.log(response, data);
-    return { results: data };
+    // return { results: data };
+    return data;
   }
 
   set query(newQuery) {

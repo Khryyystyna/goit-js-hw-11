@@ -17,12 +17,12 @@ const handleSubmit = async event => {
     pixabay.query = searchQuery;
 
 try {
-    const { results, total } = await pixabay.getPhotos();
+  const { hits, total } = await pixabay.getPhotos();
     if (results.length === 0) {
         Notify.info('Sorry, there are no images matching your search query. Please try again');
         return;
     }
-    const markup = createMarkup(results);
+    const markup = createMarkup(hits);
     refs.galery.insertAdjacentHTML('beforeend', markup);
     pixabay.calculateTotalHits(total);
 
