@@ -1,3 +1,4 @@
+import './css/styles.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { PixabayAPI } from './js/PixabayAPI';
 import { createMarkup } from './js/createMarkup';
@@ -7,29 +8,31 @@ const pixabay = new PixabayAPI();
 
 const handleSubmit = async event => {
     event.preventDefault();
-    const { elements: { query }, } = event.currentTarget;
+    const { elements: { query } } = event.currentTarget;
     const searchQuery = query.value.trim().toLowerCase();
     if (!searchQuery) {
-        Notify.failure('Sorry, there are no images matching your search query. Please try again');
+        Notify.failure('The search field is empty');
         return;
-    }
+  }
     clearPage();
     pixabay.query = searchQuery;
 
 try {
-  const { hits, total } = await pixabay.getPhotos();
-    if (results.length === 0) {
-        Notify.info('Sorry, there are no images matching your search query. Please try again');
-        return;
-    }
-    const markup = createMarkup(hits);
-    refs.galery.insertAdjacentHTML('beforeend', markup);
-    pixabay.calculateTotalHits(total);
+  const { hits, totalHits } = await pixabay.getPhotos(searchQuery);
+    if (hits.length === 0) {
+           Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again');
+      return;
+  }
+ 
+  const markup = createMarkup(hits);
+    refs.form.insertAdjacentHTML('beforeend', markup);
+    pixabay.calculateTotalHits(totalHits);
 
     if (pixabay.isShowLoadMore) {
         refs.loadMoreBtn.classList.remove('is-hidden');
     }
 } catch (error) {
+    console.log(error);
     clearPage();
 }
 };
@@ -40,11 +43,12 @@ const onLoadMore = () => {
     refs.loadMoreBtn.classList.add('is-hidden');
   }
     pixabay.getPhotos()
-        .then(({ results }) => {
-            const markup = createMarkup(results);
-            refs.galery.insertAdjacentHTML('beforeend', markup);
+        .then(({ hits, totalHits }) => {
+            const markup = createMarkup(hits);
+            refs.form.insertAdjacentHTML('beforeend', markup);
         })
-     .catch(error => {
+      .catch(error => {
+       console.log(error);
      clearPage();
     });
  };
@@ -54,6 +58,6 @@ refs.loadMoreBtn.addEventListener('click', onLoadMore);
 
 function clearPage() {
   pixabay.resetPage();
-//   refs.galery.innerHTML = '';
+  refs.form.innerHTML = '';
   refs.loadMoreBtn.classList.add('is-hidden');
 }

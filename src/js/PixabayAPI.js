@@ -1,9 +1,9 @@
 
 export class PixabayAPI {
   #page = 1;
-  #totalHits = 0;
+  #totalHits = 40;
   #perPage = 20;
-  #query = '';
+  // #query = '';
 
 
   async getPhotos() {
@@ -11,14 +11,14 @@ export class PixabayAPI {
     const imageType = "photo";
     const orientation = "horizontal";
     const safeSearch = "true";
+    const query = '';
 
-    const url = `https://pixabay.com/api/?key=${key}&q=${this.#query}&image_type=${imageType}&pretty=true&orientation=${orientation}&safe_search=${safeSearch}&page=${this.#page}&tottal_hits=${this.#totalHits}&per_page=${this.#perPage}`;
+    const url = `https://pixabay.com/api/?key=${key}&q=${query}&image_type=${imageType}&pretty=true&orientation=${orientation}&safe_search=${safeSearch}&page=${this.#page}&tottal_hits=${this.#totalHits}&per_page=${this.#perPage}`;
 
     let response = await fetch(url);
     let data = await response.json();
     console.log(response, data);
-    // return { results: data };
-    return data;
+    return { results: data };
   }
 
   set query(newQuery) {
