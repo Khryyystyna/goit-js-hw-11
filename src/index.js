@@ -1,8 +1,12 @@
 import './css/styles.css';
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import Notiflix from 'notiflix';
 import { PixabayAPI } from './js/PixabayAPI';
 import { createMarkup } from './js/createMarkup';
 import { refs } from './js/refs';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
+const lightbox = new SimpleLightbox('.gallery a');
 
 const pixabay = new PixabayAPI();
 
@@ -14,7 +18,8 @@ const handleSubmit = async event => {
         Notiflix.Notify.failure('The search field is empty');
         return;
   }
-    clearPage();
+  clearPage();
+  lightbox.refresh();
     pixabay.query = searchQuery;
 
 try {
@@ -23,11 +28,13 @@ try {
            Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again');
       return;
   }
- 
+  Notiflix.Notify.success(`Hooray! We found ${total} images`);
+   
     const markup = createMarkup(hits);
     refs.gallery.insertAdjacentHTML('beforeend', markup);
     pixabay.calculateTotalHits(total);
     refs.gallery.innerHTML = markup;
+    lightbox.refresh();
     if (pixabay.isShowLoadMore) {
       refs.loadMoreBtn.classList.remove('is-hidden');
   }
@@ -59,5 +66,4 @@ refs.loadMoreBtn.addEventListener('click', onLoadMore);
 function clearPage() {
   pixabay.resetPage();
   refs.gallery.innerHTML = '';
-  // refs.loadMoreBtn.classList.add('is-hidden');
 }
