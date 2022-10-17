@@ -10,6 +10,7 @@ const handleSubmit = async event => {
     event.preventDefault();
     const { elements: { query } } = event.currentTarget;
     const searchQuery = query.value.trim().toLowerCase();
+    console.log(searchQuery);
     if (!searchQuery) {
         Notify.failure('The search field is empty');
         return;
@@ -18,19 +19,19 @@ const handleSubmit = async event => {
     pixabay.query = searchQuery;
 
 try {
-  const { hits, totalHits } = await pixabay.getPhotos(searchQuery);
+  const { hits, total } = await pixabay.getPhotos(searchQuery);
     if (hits.length === 0) {
            Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again');
       return;
   }
  
-  const markup = createMarkup(hits);
-    refs.form.insertAdjacentHTML('beforeend', markup);
-    pixabay.calculateTotalHits(totalHits);
-
+    const markup = createMarkup(hits);
+    refs.gallery.insertAdjacentHTML('beforeend', markup);
+    pixabay.calculateTotalHits(total);
+    refs.gallery.innerHTML = markup;
     if (pixabay.isShowLoadMore) {
-        refs.loadMoreBtn.classList.remove('is-hidden');
-    }
+      refs.loadMoreBtn.classList.remove('is-hidden');
+  }
 } catch (error) {
     console.log(error);
     clearPage();
@@ -43,9 +44,9 @@ const onLoadMore = () => {
     refs.loadMoreBtn.classList.add('is-hidden');
   }
     pixabay.getPhotos()
-        .then(({ hits, totalHits }) => {
+        .then(({ hits, total }) => {
             const markup = createMarkup(hits);
-            refs.form.insertAdjacentHTML('beforeend', markup);
+            refs.gallery.insertAdjacentHTML('beforeend', markup);
         })
       .catch(error => {
        console.log(error);
@@ -58,6 +59,6 @@ refs.loadMoreBtn.addEventListener('click', onLoadMore);
 
 function clearPage() {
   pixabay.resetPage();
-  refs.form.innerHTML = '';
-  refs.loadMoreBtn.classList.add('is-hidden');
+  refs.gallery.innerHTML = '';
+  // refs.loadMoreBtn.classList.add('is-hidden');
 }
