@@ -22,11 +22,11 @@ export class PixabayAPI {
   }
 
   set query(newQuery) {
-    this.#page = newQuery;
+    this.#query = newQuery;
   }
 
   get query() {
-    return this.#page;
+    return this.#query;
   }
 
   increment() {

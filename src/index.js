@@ -10,9 +10,8 @@ const handleSubmit = async event => {
     event.preventDefault();
     const { elements: { query } } = event.currentTarget;
     const searchQuery = query.value.trim().toLowerCase();
-    console.log(searchQuery);
     if (!searchQuery) {
-        Notify.failure('The search field is empty');
+        Notiflix.Notify.failure('The search field is empty');
         return;
   }
     clearPage();
